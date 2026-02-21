@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>埃及-深度旅遊指南</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #C5973A;
+            --gold-light: #E8C97A;
+            --gold-dark: #8B6420;
+            --teal: #1A6B6B;
+            --sand: #F5EFE0;
+            --dark: #1C1008;
+        }
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #F9F5EC; color: #2C1810; }
+        .font-serif { font-family: 'Noto Serif TC', serif; }
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .gold { color: var(--gold); }
+        .bg-gold { background-color: var(--gold); }
+        .border-gold { border-color: var(--gold); }
+
+        /* Tab styles */
+        .tab-active { border-bottom: 2px solid var(--gold); color: var(--gold); font-weight: 700; }
+
+        /* Day nav active */
+        .day-active { background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: white; border-radius: 0.75rem; box-shadow: 0 4px 15px rgba(197,151,58,0.3); }
+
+        /* Card styles */
+        .card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 1px 10px rgba(0,0,0,0.06);
+            border: 1px solid #EEE4C8;
+        }
+
+        /* Hieroglyph decoration */
+        .hiero-border {
+            border-left: 4px solid var(--gold);
+            background: linear-gradient(to right, rgba(197,151,58,0.05), transparent);
+        }
+
+        /* Animated entrance */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in { animation: fadeInUp 0.5s ease forwards; }
+
+        /* Section titles */
+        .section-title {
+            font-family: 'Noto Serif TC', serif;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        /* Dust warning */
+        .dust-warning { background: rgba(239,68,68,0.08); border-left: 4px solid #EF4444; border-radius: 0 0.5rem 0.5rem 0; }
+
+        /* Nav bar */
+        nav { background: white; box-shadow: 0 2px 15px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 50; }
+        
+        /* Feature icon */
+        .feature-icon {
+            width: 48px; height: 48px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* Shopping tier */
+        .tier-badge {
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            letter-spacing: 0.05em;
+        }
+
+        /* Smooth scroll */
+        html { scroll-behavior: smooth; }
+
+        /* Active section */
+        .active-section { display: block; }
+        .inactive-section { display: none !important; }
+        
+        /* Itinerary needs flex */
+        #view-itinerary.active-section { display: block; }
+        
+        .itinerary-view .itinerary-inner { display: flex; flex-direction: column; min-height: 600px; }
+        @media (min-width: 768px) {
+            .itinerary-view { height: calc(100vh - 64px); }
+            .itinerary-view.active-section { display: flex; flex-direction: column; }
+            .itinerary-view .itinerary-inner { flex-direction: row; flex: 1; overflow: hidden; height: 100%; }
+            .itinerary-sidebar { max-height: none !important; height: 100% !important; overflow-y: auto; }
+            #daily-content { overflow-y: auto; }
+        }
+
+        /* Hotel card */
+        .hotel-card { background: linear-gradient(to right, #FFF8EC, white); border: 1px solid #E8D8A0; border-radius: 0.75rem; }
+    </style>
+</head>
+<body class="text-slate-800 flex flex-col" style="min-height:100vh;">
+
+    <!-- Top Navigation (Mobile Optimized) -->
+    <nav class="z-20 flex-shrink-0">
+        <div class="max-w-7xl mx-auto px-0 sm:px-4">
+            <!-- 手機版改為垂直堆疊 (flex-col)，電腦版維持水平 (sm:flex-row) -->
+            <div class="flex flex-col sm:flex-row justify-between items-center sm:h-16">
+                <!-- 左側標題區 -->
+                <div class="flex items-center gap-2 w-full justify-center sm:justify-start py-3 sm:py-0 border-b border-slate-100 sm:border-none bg-white">
+                    <span class="text-xl sm:text-2xl">𓂀</span>
+                    <div class="font-bold text-lg sm:text-xl leading-tight section-title whitespace-nowrap">埃及-深度旅遊指南</div>
+                </div>
+                <!-- 右側按鈕區 (手機版均分 1/4，呈現 APP 導覽列風格) -->
+                <div class="flex w-full sm:w-auto justify-between sm:justify-end">
+                    <button onclick="switchTab('overview')" id="tab-overview" class="flex flex-col sm:flex-row items-center justify-center py-2 sm:py-4 px-2 sm:px-3 text-[11px] sm:text-sm font-medium tab-active transition-colors whitespace-nowrap flex-1 sm:flex-none gap-1 sm:gap-0">
+                        <i data-lucide="layout-dashboard" class="h-4 w-4 sm:mr-1"></i><span class="hidden sm:inline">行程總覽</span><span class="sm:hidden">總覽</span>
+                    </button>
+                    <button onclick="switchTab('itinerary')" id="tab-itinerary" class="flex flex-col sm:flex-row items-center justify-center py-2 sm:py-4 px-2 sm:px-3 text-[11px] sm:text-sm font-medium text-slate-500 hover:text-slate-700 transition-colors whitespace-nowrap flex-1 sm:flex-none gap-1 sm:gap-0">
+                        <i data-lucide="map" class="h-4 w-4 sm:mr-1"></i><span class="hidden sm:inline">每日行程</span><span class="sm:hidden">行程</span>
+                    </button>
+                    <button onclick="switchTab('prep')" id="tab-prep" class="flex flex-col sm:flex-row items-center justify-center py-2 sm:py-4 px-2 sm:px-3 text-[11px] sm:text-sm font-medium text-slate-500 hover:text-slate-700 transition-colors whitespace-nowrap flex-1 sm:flex-none gap-1 sm:gap-0">
+                        <i data-lucide="clipboard-list" class="h-4 w-4 sm:mr-1"></i><span class="hidden sm:inline">行前準備</span><span class="sm:hidden">準備</span>
+                    </button>
+                    <button onclick="switchTab('culture')" id="tab-culture" class="flex flex-col sm:flex-row items-center justify-center py-2 sm:py-4 px-2 sm:px-3 text-[11px] sm:text-sm font-medium text-slate-500 hover:text-slate-700 transition-colors whitespace-nowrap flex-1 sm:flex-none gap-1 sm:gap-0">
+                        <i data-lucide="book-open" class="h-4 w-4 sm:mr-1"></i><span class="hidden sm:inline">人文知識</span><span class="sm:hidden">知識</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-1" style="min-height:0;">
+
+        <!-- ============ TAB 1: OVERVIEW ============ -->
+        <div id="view-overview" class="active-section w-full">
+
+            <!-- Trip Highlights -->
+            <div class="max-w-5xl mx-auto px-4 py-8 space-y-6">
+
+                <!-- 獨家安排 grid -->
+                <div>
+                    <h2 class="section-title text-xl mb-4 flex items-center gap-2"><span class="text-2xl">✦</span> 獨家安排與行程亮點</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="card p-5">
+                            <div class="feature-icon bg-amber-50 mb-3"><span class="text-2xl">🌙</span></div>
+                            <h3 class="font-bold text-base mb-1">阿布辛貝的日與夜</h3>
+                            <p class="text-sm text-slate-500">入住阿布辛貝一晚，免去凌晨長途車程的辛勞。欣賞震撼人心的聲光秀與曙光美景，二次造訪神殿之美。</p>
+                        </div>
+                        <div class="card p-5">
+                            <div class="feature-icon bg-teal-50 mb-3"><span class="text-2xl">🏜️</span></div>
+                            <h3 class="font-bold text-base mb-1">巴哈利亞綠洲黑白沙漠</h3>
+                            <p class="text-sm text-slate-500">夜宿沙漠帳篷一晚，探索各式地質奇觀、滑沙體驗、水晶山尋寶，感受沙漠的浩瀚與寧靜星空。</p>
+                        </div>
+                        <div class="card p-5">
+                            <div class="feature-icon bg-rose-50 mb-3"><span class="text-2xl">🏛️</span></div>
+                            <h3 class="font-bold text-base mb-1">三大博物館一次收藏</h3>
+                            <p class="text-sm text-slate-500">埃及博物館（建於1902）、大埃及博物館（GEM，全球最大）、埃及文明博物館，22具皇家木乃伊震撼登場。</p>
+                        </div>
+                        <div class="card p-5">
+                            <div class="feature-icon bg-indigo-50 mb-3"><span class="text-2xl">⛵</span></div>
+                            <h3 class="font-bold text-base mb-1">尼羅河豪華郵輪巡航</h3>
+                            <p class="text-sm text-slate-500">乘坐 MS Royal Signature 等級豪華遊輪，客房配備全開式落地窗，沿途欣賞孔翁波、艾德芙、卡納克神殿。</p>
+                        </div>
+                        <div class="card p-5">
+                            <div class="feature-icon bg-yellow-50 mb-3"><span class="text-2xl">🔺</span></div>
+                            <h3 class="font-bold text-base mb-1">入內古夫金字塔</h3>
+                            <p class="text-sm text-slate-500">特別安排進入吉薩最大、最熱門的古夫金字塔內部探秘，體驗市場鮮少安排的珍稀行程。</p>
+                        </div>
+                        <div class="card p-5">
+                            <div class="feature-icon bg-purple-50 mb-3"><span class="text-2xl">🕌</span></div>
+                            <h3 class="font-bold text-base mb-1">路克索古城底比斯 3天2夜</h3>
+                            <p class="text-sm text-slate-500">丹德拉神殿（含地下室）、哈布神殿、哈姬蘇女王神殿、帝王谷三座陵墓，深度沉浸古埃及帝國瑰寶。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Route Map -->
+                <div class="card p-6">
+                    <h2 class="section-title text-xl mb-4 flex items-center gap-2"><span class="text-2xl">🗺️</span> 行程路線圖</h2>
+                    <div class="flex flex-wrap gap-2 items-center text-sm">
+                        <span class="bg-amber-700 text-white px-3 py-1.5 rounded-full font-bold">台北</span>
+                        <span class="text-amber-600">✈ 阿聯酋</span>
+                        <span class="bg-amber-600 text-white px-3 py-1.5 rounded-full font-bold">開羅</span>
+                        <span class="text-slate-400">→ 專車</span>
+                        <span class="bg-stone-500 text-white px-3 py-1.5 rounded-full font-bold">黑白沙漠</span>
+                        <span class="text-slate-400">↺</span>
+                        <span class="bg-amber-600 text-white px-3 py-1.5 rounded-full font-bold">開羅</span>
+                        <span class="text-amber-600">✈</span>
+                        <span class="bg-teal-600 text-white px-3 py-1.5 rounded-full font-bold">亞斯文</span>
+                        <span class="text-slate-400">→ 專車</span>
+                        <span class="bg-teal-700 text-white px-3 py-1.5 rounded-full font-bold">阿布辛貝</span>
+                        <span class="text-teal-600">⛵ 河輪</span>
+                        <span class="bg-teal-600 text-white px-3 py-1.5 rounded-full font-bold">路克索</span>
+                        <span class="text-slate-400">→ 專車</span>
+                        <span class="bg-blue-500 text-white px-3 py-1.5 rounded-full font-bold">虎加達</span>
+                        <span class="text-amber-600">✈</span>
+                        <span class="bg-amber-600 text-white px-3 py-1.5 rounded-full font-bold">開羅</span>
+                        <span class="text-amber-600">✈</span>
+                        <span class="bg-amber-700 text-white px-3 py-1.5 rounded-full font-bold">台北</span>
+                    </div>
+                </div>
+
+                <!-- Flights -->
+                <div class="card p-6">
+                    <h2 class="section-title text-xl mb-4 flex items-center gap-2"><span class="text-2xl">✈️</span> 阿聯酋航空 班機資訊</h2>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="bg-amber-50">
+                                    <th class="px-4 py-3 text-left font-semibold text-amber-900 rounded-tl-lg">天數</th>
+                                    <th class="px-4 py-3 text-left font-semibold text-amber-900">出發時間</th>
+                                    <th class="px-4 py-3 text-left font-semibold text-amber-900">抵達時間</th>
+                                    <th class="px-4 py-3 text-left font-semibold text-amber-900">起飛/抵達城市</th>
+                                    <th class="px-4 py-3 text-left font-semibold text-amber-900">飛行時間</th>
+                                    <th class="px-4 py-3 text-left font-semibold text-amber-900 rounded-tr-lg">航班編號</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                <tr class="hover:bg-amber-50/50"><td class="px-4 py-3 font-bold text-amber-700">Day 01</td><td class="px-4 py-3">23:40</td><td class="px-4 py-3">05:35+1</td><td class="px-4 py-3">台北 ✈ 杜拜</td><td class="px-4 py-3">約9時55分</td><td class="px-4 py-3 font-mono text-amber-800">EK-367</td></tr>
+                                <tr class="hover:bg-amber-50/50"><td class="px-4 py-3 font-bold text-amber-700">Day 02</td><td class="px-4 py-3">08:10</td><td class="px-4 py-3">10:25</td><td class="px-4 py-3">杜拜 ✈ 開羅</td><td class="px-4 py-3">約4時15分</td><td class="px-4 py-3 font-mono text-amber-800">EK-927</td></tr>
+                                <tr class="hover:bg-amber-50/50"><td class="px-4 py-3 font-bold text-amber-700">Day 14</td><td class="px-4 py-3">19:30</td><td class="px-4 py-3">00:40+1</td><td class="px-4 py-3">開羅 ✈ 杜拜</td><td class="px-4 py-3">約3時10分</td><td class="px-4 py-3 font-mono text-amber-800">EK-924</td></tr>
+                                <tr class="hover:bg-amber-50/50"><td class="px-4 py-3 font-bold text-amber-700">Day 15</td><td class="px-4 py-3">03:40</td><td class="px-4 py-3">15:35</td><td class="px-4 py-3">杜拜 ✈ 台北</td><td class="px-4 py-3">約7時55分</td><td class="px-4 py-3 font-mono text-amber-800">EK-366</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-3">※ 以上航班時間以及航班編號僅供參考，正確航班資訊請您以實際預訂為主。</p>
+                </div>
+
+                <!-- Hotels -->
+                <div>
+                    <h2 class="section-title text-xl mb-4 flex items-center gap-2"><span class="text-2xl">🏨</span> 住宿體驗</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="hotel-card p-5">
+                            <div class="flex items-start gap-3">
+                                <span class="text-3xl">🚢</span>
+                                <div>
+                                    <div class="font-bold text-base">MS Royal Signature</div>
+                                    <div class="text-xs text-amber-600 font-semibold mb-2">★★★★★ 尼羅河豪華遊輪</div>
+                                    <p class="text-xs text-slate-500">設計融合古埃及典雅與現代舒適，全開式落地窗客房，讓您盡享尼羅河兩岸的壯麗景致。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hotel-card p-5">
+                            <div class="flex items-start gap-3">
+                                <span class="text-3xl">🏰</span>
+                                <div>
+                                    <div class="font-bold text-base">Cairo Marriott Hotel</div>
+                                    <div class="text-xs text-amber-600 font-semibold mb-2">★★★★★ 開羅萬豪（尼羅河景房）</div>
+                                    <p class="text-xs text-slate-500">前身為接待歐洲皇室貴族的宮殿，古典氣息與現代五星設施完美交融，特別安排尼羅河景觀房。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hotel-card p-5">
+                            <div class="flex items-start gap-3">
+                                <span class="text-3xl">⛺</span>
+                                <div>
+                                    <div class="font-bold text-base">Shahrazad Desert Camp</div>
+                                    <div class="text-xs text-amber-600 font-semibold mb-2">白沙漠唯一帳篷旅館</div>
+                                    <p class="text-xs text-slate-500">無須克難野營，內附獨立冷熱水衛浴，在滿天星河下的白沙漠中沉睡，美景兼具舒適。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hotel-card p-5">
+                            <div class="flex items-start gap-3">
+                                <span class="text-3xl">🌴</span>
+                                <div>
+                                    <div class="font-bold text-base">Marriott Beach Resort / Movenpick</div>
+                                    <div class="text-xs text-amber-600 font-semibold mb-2">★★★★★ 虎加達紅海度假村</div>
+                                    <p class="text-xs text-slate-500">紅海岸邊頂級度假村，享受湛藍海水、珊瑚礁生態，與沙漠古文明之旅的完美轉場。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tips summary -->
+                <div class="card p-6">
+                    <h2 class="section-title text-xl mb-4 flex items-center gap-2"><span class="text-2xl">💡</span> 小費參考表</h2>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 text-xs">
+                        <div class="bg-slate-50 rounded-lg p-3 text-center"><div class="font-bold text-slate-700 mb-1">司機/導遊/領隊</div><div class="text-amber-700 font-bold">$12 USD/人/天</div><div class="text-slate-400">15天共 $180</div></div>
+                        <div class="bg-slate-50 rounded-lg p-3 text-center"><div class="font-bold text-slate-700 mb-1">飯店行李</div><div class="text-amber-700 font-bold">$1 USD/件</div><div class="text-slate-400">進出各一次</div></div>
+                        <div class="bg-slate-50 rounded-lg p-3 text-center"><div class="font-bold text-slate-700 mb-1">河輪服務員</div><div class="text-amber-700 font-bold">$5 USD/天</div><div class="text-slate-400">4天共$20</div></div>
+                        <div class="bg-slate-50 rounded-lg p-3 text-center"><div class="font-bold text-slate-700 mb-1">騎駱駝</div><div class="text-amber-700 font-bold">$1 USD/次</div><div class="text-slate-400">每次</div></div>
+                        <div class="bg-slate-50 rounded-lg p-3 text-center"><div class="font-bold text-slate-700 mb-1">馬車</div><div class="text-amber-700 font-bold">$2 USD/人</div><div class="text-slate-400">每次</div></div>
+                        <div class="bg-slate-50 rounded-lg p-3 text-center"><div class="font-bold text-slate-700 mb-1">風帆船</div><div class="text-amber-700 font-bold">$1 USD/人</div><div class="text-slate-400">每次</div></div>
+                        <div class="bg-slate-50 rounded-lg p-3 text-center"><div class="font-bold text-slate-700 mb-1">飯店床頭</div><div class="text-amber-700 font-bold">$1 USD/房</div><div class="text-slate-400">每天</div></div>
+                        <div class="bg-slate-50 rounded-lg p-3 text-center"><div class="font-bold text-slate-700 mb-1">付費廁所</div><div class="text-amber-700 font-bold">$0.5 USD/次</div><div class="text-slate-400">多備零鈔</div></div>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-3">建議準備$100-150 USD 小面額零鈔（$1元50張＋$5元10張）用於雜支小費。</p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ============ TAB 2: ITINERARY ============ -->
+        <div id="view-itinerary" class="inactive-section w-full itinerary-view">
+            <div class="itinerary-inner">
+            <!-- Side Nav -->
+            <div class="itinerary-sidebar w-full md:w-56 bg-white border-b md:border-b-0 md:border-r border-amber-100 flex flex-col flex-shrink-0" style="max-height:160px;min-height:120px;">
+                <div class="p-3 border-b border-amber-100 bg-amber-50">
+                    <div class="text-xs font-bold text-amber-800">選擇日期</div>
+                </div>
+                <div id="days-nav" class="overflow-x-auto overflow-y-hidden md:overflow-y-auto md:overflow-x-hidden flex md:flex-col p-2 gap-1 hide-scroll" style="flex:1;"></div>
+            </div>
+            <!-- Content -->
+            <div class="flex-1 overflow-y-auto p-4 sm:p-6 bg-stone-50" id="daily-content"></div>
+            </div><!-- end itinerary-inner -->
+        </div>
+
+        <!-- ============ TAB 3: PREP ============ -->
+        <div id="view-prep" class="inactive-section w-full overflow-y-auto p-4 sm:p-8">
+            <div class="max-w-5xl mx-auto space-y-6 pb-12">
+
+                <div class="card p-5 border-l-4 border-gold">
+                    <h2 class="text-xl font-bold mb-1 flex items-center gap-2 section-title"><span>📋</span> 全功能行前準備儀表板</h2>
+                    <p class="text-slate-500 text-sm">行李清單、購物建議、預算換匯策略、健康提醒與阿拉伯語談判用語，一站搞定。</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                    <!-- Packing List -->
+                    <div class="card p-6">
+                        <h3 class="font-bold text-base mb-4 flex items-center gap-2 border-b pb-2 text-indigo-700"><i data-lucide="shirt" class="h-4 w-4"></i> 行李清單（15天亞麻風）</h3>
+                        <p class="text-xs text-slate-400 italic mb-3">✦ 埃及亞麻透氣快乾，急用時手洗晾在冷氣房一晚即乾。</p>
+                        <ul class="space-y-2 text-sm text-slate-600">
+                            <li><strong>亞麻長袖襯衫：</strong>4-5件（原麻、白、軍綠、深藍）</li>
+                            <li><strong>短袖排汗 T-shirt：</strong>3-4件（沙漠活動用）</li>
+                            <li><strong>長褲：</strong>3條（彈性工裝 x1、奇諾褲 x2）</li>
+                            <li><strong>保暖衣物：</strong>輕薄羽絨衣1件（沙漠/飛機必備）</li>
+                            <li><strong>大絲巾：</strong>1-2條（大地色系、進神殿遮肩備用）</li>
+                            <li><strong>內衣褲/襪子：</strong>8套，或帶舊的旅途汰換</li>
+                            <li><strong>鞋類：</strong>健走鞋1雙（神殿多碎石）+ 涼/拖鞋1雙</li>
+                            <li><strong>防曬裝備：</strong>SPF50+ 防曬乳、遮陽帽、UV400 墨鏡</li>
+                        </ul>
+                        <div class="mt-3 text-xs text-amber-700 bg-amber-50 rounded-lg p-2">
+                            💡 洗衣時機：D8郵輪、D9郵輪、D12虎加達飯店（標記於每日行程）
+                        </div>
+                    </div>
+
+                    <!-- Souvenirs -->
+                    <div class="card p-6">
+                        <h3 class="font-bold text-base mb-4 flex items-center gap-2 border-b pb-2 text-amber-600"><i data-lucide="gift" class="h-4 w-4"></i> 戰利品推薦 × 殺價策略</h3>
+                        <div class="space-y-4 text-sm">
+                            <div>
+                                <div class="flex items-center gap-2 mb-2"><span class="tier-badge bg-green-100 text-green-800">低價位 &lt;$30</span><span class="text-slate-400 text-xs">辦公室/一般朋友</span></div>
+                                <ul class="space-y-1.5 text-slate-600 ml-2">
+                                    <li>✦ <strong>莎草紙書籤：</strong>$5-10 USD，開價3折砍起</li>
+                                    <li>✦ <strong>洛神花茶（亞斯文特產）：</strong>$5-10 USD/包，品質最純</li>
+                                    <li>✦ <strong>水晶原石：</strong>$5-15 USD，路邊小攤隨喜殺價</li>
+                                    <li>✦ <strong>小金字塔模型：</strong>$10-20 USD，買多更便宜</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2 mb-2"><span class="tier-badge bg-amber-100 text-amber-800">中價位 $30-100</span><span class="text-slate-400 text-xs">好友/家人</span></div>
+                                <ul class="space-y-1.5 text-slate-600 ml-2">
+                                    <li>✦ <strong>手工莎草紙：</strong>$15-30 USD，5折成交宜</li>
+                                    <li>✦ <strong>丹德拉之燈複製品：</strong>$20-40 USD，獨特紀念品</li>
+                                    <li>✦ <strong>鱷魚/老鷹雕像：</strong>$20-40 USD，4折起談</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2 mb-2"><span class="tier-badge bg-rose-100 text-rose-800">高價位 $50+</span><span class="text-slate-400 text-xs">重要客戶/自留</span></div>
+                                <ul class="space-y-1.5 text-slate-600 ml-2">
+                                    <li>✦ <strong>頂級香精油：</strong>$50-100 USD，工廠內購買最佳</li>
+                                    <li>✦ <strong>埃及長絨棉服飾：</strong>$25-50 USD，連鎖品牌可刷卡</li>
+                                    <li>✦ <strong>訂製象形文字項鍊 (Cartouche)：</strong>$50-150 USD，送禮首選</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Budget -->
+                    <div class="card p-6">
+                        <h3 class="font-bold text-base mb-4 flex items-center gap-2 border-b pb-2 text-emerald-600"><i data-lucide="wallet" class="h-4 w-4"></i> 預算與換匯策略（兩人份）</h3>
+                        <div class="space-y-3 text-sm text-slate-600">
+                            <div class="flex items-start gap-2"><span class="text-emerald-500 flex-shrink-0">●</span><div><strong>固定小費（必備）：</strong>每人 $180 USD × 2 = <strong class="text-emerald-700">$360 USD</strong>（司機+導遊+領隊）</div></div>
+                            <div class="flex items-start gap-2"><span class="text-emerald-500 flex-shrink-0">●</span><div><strong>零鈔雜支：</strong>建議備 $100-150 USD 小面額（$1元50張、$5元10張），用於騎駱駝、馬車、廁所等</div></div>
+                            <div class="flex items-start gap-2"><span class="text-emerald-500 flex-shrink-0">●</span><div><strong>購物預算：</strong>若採購香精/金銀飾品送客戶，兩人建議備 <strong class="text-emerald-700">$1,500-2,000 USD</strong>，大型工廠可刷卡</div></div>
+                            <div class="flex items-start gap-2"><span class="text-emerald-500 flex-shrink-0">●</span><div><strong>埃磅（EGP）：</strong>抵達機場先換 $100 USD 等值，用於買水、零食與路邊小費。其餘大筆支出付美金更划算</div></div>
+                            <div class="bg-amber-50 rounded-lg p-3 text-xs text-amber-800">
+                                💳 聲光秀導覽冊 $10-15 USD（固定價）、哈利利市集攤位以現金為主、大型紀念品店可刷 Visa/Master
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Health -->
+                    <div class="card p-6">
+                        <h3 class="font-bold text-base mb-4 flex items-center gap-2 border-b pb-2 text-rose-500"><i data-lucide="shield-alert" class="h-4 w-4"></i> 健康與裝備提醒</h3>
+                        <div class="space-y-3 text-sm">
+                            <div class="dust-warning p-3">
+                                <div class="font-bold text-red-800 mb-1 text-xs">🚨 高粉塵日 — 眼部防護（極重要）</div>
+                                <p class="text-red-700 text-xs"><strong>D4-D5 沙漠</strong>與<strong>D13 古夫金字塔內部</strong>為高風險期。請隨身攜帶人工淚液，並全程配戴防風墨鏡。</p>
+                            </div>
+                            <div class="flex items-start gap-2 text-slate-600"><span class="text-blue-500 flex-shrink-0">●</span><div><strong>相機防護：</strong>準備吹塵球，沙漠環境沙塵極細，拍完神殿必須清潔鏡頭。廣角鏡頭適合神殿/金字塔。</div></div>
+                            <div class="flex items-start gap-2 text-slate-600"><span class="text-purple-500 flex-shrink-0">●</span><div><strong>行動電源：</strong>GaN 65W 充電頭（含筆電充電）；埃及插頭為歐規雙圓插，帶萬用轉接頭。</div></div>
+                            <div class="flex items-start gap-2 text-slate-600"><span class="text-teal-500 flex-shrink-0">●</span><div><strong>網路備用：</strong>行程含 10GB 流量卡，建議機場額外買 Orange/Vodafone 純流量卡備用，確保視訊會議不斷線。</div></div>
+                            <div class="flex items-start gap-2 text-slate-600"><span class="text-amber-500 flex-shrink-0">●</span><div><strong>腸胃準備：</strong>備整腸藥、止瀉藥。避免飲用非瓶裝水，路邊飲料謹慎選擇。</div></div>
+                        </div>
+                    </div>
+
+                    <!-- Language -->
+                    <div class="card p-6 lg:col-span-2">
+                        <h3 class="font-bold text-base mb-4 flex items-center gap-2 border-b pb-2 text-sky-600"><i data-lucide="message-circle" class="h-4 w-4"></i> 實用阿拉伯語（談判與殺價專用）</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="bg-sky-50 text-sky-800">
+                                        <th class="px-4 py-2 text-left rounded-tl-lg font-semibold">情境</th>
+                                        <th class="px-4 py-2 text-left font-semibold">英文</th>
+                                        <th class="px-4 py-2 text-left font-semibold">阿拉伯語</th>
+                                        <th class="px-4 py-2 text-left rounded-tr-lg font-semibold">發音參考</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    <tr class="hover:bg-sky-50/50"><td class="px-4 py-2.5 font-bold text-slate-700">問價</td><td class="px-4 py-2.5">How much?</td><td class="px-4 py-2.5 text-sky-700 font-medium">Bikam?</td><td class="px-4 py-2.5 text-slate-500">比-勘</td></tr>
+                                    <tr class="hover:bg-sky-50/50"><td class="px-4 py-2.5 font-bold text-slate-700">太貴了</td><td class="px-4 py-2.5">Too expensive!</td><td class="px-4 py-2.5 text-sky-700 font-medium">Ghaali keteer!</td><td class="px-4 py-2.5 text-slate-500">嘎-哩 顆-替</td></tr>
+                                    <tr class="hover:bg-sky-50/50"><td class="px-4 py-2.5 font-bold text-slate-700">便宜一點</td><td class="px-4 py-2.5">Lower price?</td><td class="px-4 py-2.5 text-sky-700 font-medium">Rakhis shwaya?</td><td class="px-4 py-2.5 text-slate-500">拉-黑斯 刷-亞</td></tr>
+                                    <tr class="hover:bg-sky-50/50"><td class="px-4 py-2.5 font-bold text-slate-700">最終報價</td><td class="px-4 py-2.5">Last price?</td><td class="px-4 py-2.5 text-sky-700 font-medium">Akheer taman?</td><td class="px-4 py-2.5 text-slate-500">阿-黑兒 塔-曼</td></tr>
+                                    <tr class="hover:bg-sky-50/50"><td class="px-4 py-2.5 font-bold text-slate-700">不要</td><td class="px-4 py-2.5">No, thank you.</td><td class="px-4 py-2.5 text-sky-700 font-medium">La, shukran.</td><td class="px-4 py-2.5 text-slate-500">拉，舒-克朗</td></tr>
+                                    <tr class="hover:bg-sky-50/50"><td class="px-4 py-2.5 font-bold text-slate-700">好的</td><td class="px-4 py-2.5">Okay / Fine.</td><td class="px-4 py-2.5 text-sky-700 font-medium">Tamam / Maashi.</td><td class="px-4 py-2.5 text-slate-500">塔-曼 / 罵-許</td></tr>
+                                    <tr class="hover:bg-sky-50/50"><td class="px-4 py-2.5 font-bold text-slate-700">看一看</td><td class="px-4 py-2.5">Just looking.</td><td class="px-4 py-2.5 text-sky-700 font-medium">Bas hfuf.</td><td class="px-4 py-2.5 text-slate-500">巴-斯 ㄏ-夫</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-3 bg-amber-50 rounded-lg p-3 text-xs text-amber-800">
+                            💡 殺價技巧：通常從報價的3-4折開始出價，先用「Ghaali keteer!」表達嫌貴，再用「Akheer taman?」逼出底價。若對方不讓步，表示要走（假裝轉身）通常是最有效的招數。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============ TAB 4: CULTURE ============ -->
+        <div id="view-culture" class="inactive-section w-full overflow-y-auto p-4 sm:p-8">
+            <div class="max-w-5xl mx-auto space-y-6 pb-12">
+
+                <div class="card p-5 border-l-4 border-gold">
+                    <h2 class="text-xl font-bold mb-1 section-title flex items-center gap-2"><span>𓂀</span> 埃及人文知識百科</h2>
+                    <p class="text-slate-500 text-sm">行前深度閱讀——讓每座神殿不再只是石頭，而是活生生的歷史舞台。</p>
+                </div>
+
+                <!-- Culture sections -->
+                <div class="space-y-4">
+
+                    <details class="card overflow-hidden" open>
+                        <summary class="p-5 cursor-pointer font-bold flex items-center justify-between text-amber-800 bg-amber-50 hover:bg-amber-100 transition-colors">
+                            <span class="flex items-center gap-2"><span class="text-xl">𓇋</span> 古埃及王朝年表與文明概覽</span>
+                            <i data-lucide="chevron-down" class="h-4 w-4"></i>
+                        </summary>
+                        <div class="p-5 space-y-3 text-sm text-slate-600">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="bg-amber-50 rounded-lg p-4">
+                                    <div class="font-bold text-amber-800 mb-2">前王朝時期（約3100 BC前）</div>
+                                    <p>尼羅河兩岸形成早期城邦，象形文字開始萌芽，石板浮雕記錄最早的王權象徵。</p>
+                                </div>
+                                <div class="bg-amber-50 rounded-lg p-4">
+                                    <div class="font-bold text-amber-800 mb-2">古王國（2686-2181 BC）</div>
+                                    <p>金字塔建設顛峰期。胡夫（古夫）、卡夫拉、孟卡拉三大金字塔約於此時期完成。法老被視為神的化身。</p>
+                                </div>
+                                <div class="bg-amber-50 rounded-lg p-4">
+                                    <div class="font-bold text-amber-800 mb-2">中王國（2055-1650 BC）</div>
+                                    <p>埃及文學藝術的黃金時代。底比斯（路克索）成為重要政治中心，首度出現「亡靈書」（書寫在棺木上的咒語）。</p>
+                                </div>
+                                <div class="bg-amber-50 rounded-lg p-4">
+                                    <div class="font-bold text-amber-800 mb-2">新王國（1550-1069 BC）</div>
+                                    <p>最輝煌的帝國時期。拉美西斯二世、哈特薛普蘇特女王等名君皆屬此時代。卡納克神殿與阿布辛貝皆於此時建造。</p>
+                                </div>
+                                <div class="bg-amber-50 rounded-lg p-4">
+                                    <div class="font-bold text-amber-800 mb-2">托勒密王朝（305-30 BC）</div>
+                                    <p>亞歷山大大帝征服後，希臘語成為官方語言，但埃及傳統宗教持續。孔翁波、艾德芙、丹德拉神殿皆為此時期建造。</p>
+                                </div>
+                                <div class="bg-amber-50 rounded-lg p-4">
+                                    <div class="font-bold text-amber-800 mb-2">克麗奧佩脫拉七世（69-30 BC）</div>
+                                    <p>最後一位埃及女法老。精通九種語言，與凱撒大帝及安東尼均有深遠羅曼史。她的側臉浮雕刻於丹德拉神殿外牆。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="card overflow-hidden">
+                        <summary class="p-5 cursor-pointer font-bold flex items-center justify-between text-teal-800 bg-teal-50 hover:bg-teal-100 transition-colors">
+                            <span class="flex items-center gap-2"><span class="text-xl">𓊹</span> 景點深度解析</span>
+                            <i data-lucide="chevron-down" class="h-4 w-4"></i>
+                        </summary>
+                        <div class="p-5 space-y-4 text-sm text-slate-600">
+                            <div class="hiero-border pl-4 py-3">
+                                <div class="font-bold text-slate-800 mb-1">🔺 古夫金字塔（吉薩）</div>
+                                <p>由約230萬塊平均重2.5噸的石灰岩砌成，完工後高度138.8米，誤差僅3.8毫米，精準度令現代工程師嘆服。內部的「大迴廊」長47米，傾斜角達26度，建造目的至今仍有多種假說（宇宙學說、水利說、外星說）。目前唯一確知的是：它花了約20年、10萬名工人完成。</p>
+                            </div>
+                            <div class="hiero-border pl-4 py-3">
+                                <div class="font-bold text-slate-800 mb-1">🏛️ 阿布辛貝神殿</div>
+                                <p>拉美西斯二世（在位長達66年）於西元前1264年下令建造，最初鑿建於努比亞岩壁之中。1960年代因亞斯文水壩興建，尼羅河水位上升威脅神殿，聯合國教科文組織主導史上最大型文物搬遷工程：將整座神殿切割成超過1,000塊石塊，移至高60公尺的山頂重組。最神奇的是，工程師刻意保留了原本設計的天文奇觀——每年2月22日（拉美西斯生日）與10月22日（加冕日），晨光會穿透65米長的通道，照亮殿內4尊雕像中的3尊（祂的守護神除外，因為黑暗之神不能被光照到）。</p>
+                            </div>
+                            <div class="hiero-border pl-4 py-3">
+                                <div class="font-bold text-slate-800 mb-1">⭐ 丹德拉神殿（哈索爾神殿）</div>
+                                <p>供奉愛、歡樂與音樂女神哈索爾（牛角月盤頭像）。神殿天花板的「黃道十二宮」星象圖是古埃及天文知識的集大成，原作現存巴黎羅浮宮，此處為精緻複製品。著名的「丹德拉之燈」浮雕描繪蛇從蓮花中生出，部分現代研究者認為這是電燈泡的早期概念（主流學界則視為宗教象徵）。外牆刻有克麗奧佩脫拉七世與其子小凱撒的側臉浮雕，為埃及唯一有明確辨識的她的畫像。</p>
+                            </div>
+                            <div class="hiero-border pl-4 py-3">
+                                <div class="font-bold text-slate-800 mb-1">🦁 哈布神殿（拉美西斯三世祭殿）</div>
+                                <p>全埃及保存最完整的神殿，也是哈布神殿特有的「凹雕」（relief en creux）技法最精彩的範例。一般浮雕是「凸出牆面」，而凹雕是將圖案「刻入牆面」，在強烈陽光下形成深刻的陰影輪廓，更難以被時間磨損。拉美西斯三世是最後一位偉大的法老戰士，壁畫詳細記錄他對抗「海上民族」（Sea Peoples）的決定性勝利，這場戰役改變了整個地中海文明的格局。</p>
+                            </div>
+                            <div class="hiero-border pl-4 py-3">
+                                <div class="font-bold text-slate-800 mb-1">🏺 卡納克神殿</div>
+                                <p>世界上最大的古代神廟建築群，佔地約100公頃，相當於10個故宮。從中王國到托勒密時代，歷經30多位法老不斷擴建，形成今日的龐大規模。「大柱廳」（Hypostyle Hall）擁有134根高達21米的巨柱，5個人手牽手才能合抱其中16根主柱。神殿中央有一座刻著聖甲蟲（屎殼郎）的花崗岩雕像，據說繞行7圈可以帶來好運。</p>
+                            </div>
+                            <div class="hiero-border pl-4 py-3">
+                                <div class="font-bold text-slate-800 mb-1">👸 哈姬蘇女王神殿（哈特薛普蘇特）</div>
+                                <p>哈特薛普蘇特（約1507-1458 BC）是古埃及歷史上最有名的女法老之一，統治期間埃及空前繁榮。她以男性法老的形象統治（包括戴假鬍子），但繼位者圖特摩斯三世即位後，下令將所有關於她的記錄與雕像毀滅，試圖抹去她在歷史上的存在。這座依山而建、三層柱廊式的神殿極具現代感，被認為是古埃及最具美感的建築之一。</p>
+                            </div>
+                            <div class="hiero-border pl-4 py-3">
+                                <div class="font-bold text-slate-800 mb-1">🌑 帝王谷</div>
+                                <p>新王國時期法老們不再建金字塔，改在底比斯西岸峭壁中鑿建隱密地宮，試圖保護自己的木乃伊不被盜墓。帝王谷已發現超過63座陵墓，最著名的是1922年由霍華德·卡特發現的圖坦卡門墓（KV62）——唯一幾乎完整保存的法老陵墓，其黃金面具已成為古埃及的代表符號。壁畫描繪「亡靈書」的42個審判場景，亡者的心臟需在天平上與瑪特女神的羽毛等重，才能通過審判進入來世。</p>
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="card overflow-hidden">
+                        <summary class="p-5 cursor-pointer font-bold flex items-center justify-between text-indigo-800 bg-indigo-50 hover:bg-indigo-100 transition-colors">
+                            <span class="flex items-center gap-2"><span class="text-xl">𓍝</span> 古埃及神話與眾神圖鑑</span>
+                            <i data-lucide="chevron-down" class="h-4 w-4"></i>
+                        </summary>
+                        <div class="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-slate-600">
+                            <div class="bg-indigo-50 rounded-lg p-4">
+                                <div class="font-bold text-indigo-800 mb-1">𓂀 荷魯斯（老鷹頭）</div>
+                                <p>天空與王權之神，法老被視為荷魯斯的化身。著名的「荷魯斯之眼」象徵保護與皇室力量，是最常見的埃及護符。</p>
+                            </div>
+                            <div class="bg-indigo-50 rounded-lg p-4">
+                                <div class="font-bold text-indigo-800 mb-1">𓁢 拉/阿蒙（太陽）</div>
+                                <p>太陽神，古埃及最重要的神之一。與其他神融合形成阿蒙-拉。卡納克神殿主要供奉阿蒙神。</p>
+                            </div>
+                            <div class="bg-indigo-50 rounded-lg p-4">
+                                <div class="font-bold text-indigo-800 mb-1">歐西里斯（木乃伊形象）</div>
+                                <p>死亡與復活之神，被弟弟賽特殺害肢解後，由妻子伊西斯復原。統治來世，主持亡靈審判。</p>
+                            </div>
+                            <div class="bg-indigo-50 rounded-lg p-4">
+                                <div class="font-bold text-indigo-800 mb-1">伊西斯（翅膀）</div>
+                                <p>魔法與母性女神，歐西里斯之妻。費拉島上的愛西斯神殿為其最重要的聖地之一。</p>
+                            </div>
+                            <div class="bg-indigo-50 rounded-lg p-4">
+                                <div class="font-bold text-indigo-800 mb-1">阿努比斯（狼頭）</div>
+                                <p>木乃伊製作守護神，主管防腐與亡者引渡。帝王谷壁畫中常見阿努比斯為法老引路的場景。</p>
+                            </div>
+                            <div class="bg-indigo-50 rounded-lg p-4">
+                                <div class="font-bold text-indigo-800 mb-1">哈索爾（牛角月盤）</div>
+                                <p>愛、歡樂、音樂與美麗女神。丹德拉神殿為其主殿，神殿頂部有著名的哈索爾女神臉型柱頭。</p>
+                            </div>
+                            <div class="bg-indigo-50 rounded-lg p-4">
+                                <div class="font-bold text-indigo-800 mb-1">索貝克（鱷魚頭）</div>
+                                <p>尼羅河與力量之神，孔翁波雙神殿南側供奉索貝克，殿內展示有數十具鱷魚木乃伊。</p>
+                            </div>
+                            <div class="bg-indigo-50 rounded-lg p-4">
+                                <div class="font-bold text-indigo-800 mb-1">圖特（朱鷺頭）</div>
+                                <p>智慧與書寫之神，象形文字的創造者，也是月亮與時間的守護者。各神殿刻字旁常見其身影。</p>
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="card overflow-hidden">
+                        <summary class="p-5 cursor-pointer font-bold flex items-center justify-between text-rose-800 bg-rose-50 hover:bg-rose-100 transition-colors">
+                            <span class="flex items-center gap-2"><span class="text-xl">🍽️</span> 埃及美食完整指南</span>
+                            <i data-lucide="chevron-down" class="h-4 w-4"></i>
+                        </summary>
+                        <div class="p-5 space-y-4 text-sm text-slate-600">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="bg-rose-50 rounded-lg p-4">
+                                    <div class="font-bold text-rose-800 mb-1">🐦 埃及烤鴿（Hamam Mashwi）</div>
+                                    <p>埃及最具代表性的傳統美食，鴿子以香料醃製後慢烤，皮脆肉 প্রচ嫩，搭配埃及烤餅一起吃。行程中將有專排體驗。</p>
+                                </div>
+                                <div class="bg-rose-50 rounded-lg p-4">
+                                    <div class="font-bold text-rose-800 mb-1">🌿 努比亞烤魚（Tilapia）</div>
+                                    <p>尼羅河特產的吳郭魚，在亞斯文與努比亞村是絕對必吃的新鮮料理，以香料炸烤後香氣四溢。</p>
+                                </div>
+                                <div class="bg-rose-50 rounded-lg p-4">
+                                    <div class="font-bold text-rose-800 mb-1">🍞 埃及烤餅（Aish Baladi）</div>
+                                    <p>圓形全麥口袋餅，是埃及人每日主食。「Aish」在阿拉伯語意為「生命」，與各種醬料和燉菜搭配食用。</p>
+                                </div>
+                                <div class="bg-rose-50 rounded-lg p-4">
+                                    <div class="font-bold text-rose-800 mb-1">🥬 埃及綠湯（Molokhia）</div>
+                                    <p>以黃麻葉（molokhia）熬成的黏稠湯品，加入雞肉或兔肉，帶有獨特草本香氣，是傳統農家料理。</p>
+                                </div>
+                                <div class="bg-rose-50 rounded-lg p-4">
+                                    <div class="font-bold text-rose-800 mb-1">🌿 蔬菜鑲飯（Mahshi）</div>
+                                    <p>將蒸熟米飯、香料和番茄塞入胡椒、茄子或葡萄葉中烹製，清爽可口，是中東地區共通的家常料理。</p>
+                                </div>
+                                <div class="bg-rose-50 rounded-lg p-4">
+                                    <div class="font-bold text-rose-800 mb-1">🏙️ 行程特選餐廳</div>
+                                    <ul class="space-y-1">
+                                        <li>✦ <strong>SKY RIM百萬夜景餐廳</strong>（俯瞰開羅市區）</li>
+                                        <li>✦ <strong>開羅塔旋轉餐廳</strong>（187公尺高空360度）</li>
+                                        <li>✦ <strong>金字塔景觀餐廳</strong>（座擁吉薩金字塔美景）</li>
+                                        <li>✦ <strong>尼羅河風帆船燒烤饗宴</strong>（水上用餐體驗）</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="card overflow-hidden">
+                        <summary class="p-5 cursor-pointer font-bold flex items-center justify-between text-stone-800 bg-stone-100 hover:bg-stone-200 transition-colors">
+                            <span class="flex items-center gap-2"><span class="text-xl">📷</span> 攝影構圖完整攻略</span>
+                            <i data-lucide="chevron-down" class="h-4 w-4"></i>
+                        </summary>
+                        <div class="p-5 space-y-3 text-sm text-slate-600">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="border border-stone-200 rounded-lg p-4">
+                                    <div class="font-bold text-stone-800 mb-2">🌅 黃金拍攝時段</div>
+                                    <ul class="space-y-1.5">
+                                        <li>✦ 阿布辛貝：清晨 5:30-7:00（避開人潮，納瑟湖晨霧）</li>
+                                        <li>✦ 白沙漠：日出前後30分鐘（奇石金色輪廓）</li>
+                                        <li>✦ 金字塔：傍晚 16:00-18:00（暖光、長陰影）</li>
+                                        <li>✦ 路克索神殿：夜晚燈光（神祕金色氛圍）</li>
+                                    </ul>
+                                </div>
+                                <div class="border border-stone-200 rounded-lg p-4">
+                                    <div class="font-bold text-stone-800 mb-2">📸 推薦構圖技巧</div>
+                                    <ul class="space-y-1.5">
+                                        <li>✦ <strong>透視構圖：</strong>大柱廳巨柱間的無限延伸感</li>
+                                        <li>✦ <strong>錯位拍攝：</strong>「手捏金字塔」/「親吻人面獅身像」</li>
+                                        <li>✦ <strong>仰角構圖：</strong>巨大雕像腳下向上拍攝</li>
+                                        <li>✦ <strong>對稱構圖：</strong>哈姬蘇神殿中央引道</li>
+                                    </ul>
+                                </div>
+                                <div class="border border-stone-200 rounded-lg p-4">
+                                    <div class="font-bold text-stone-800 mb-2">🎒 裝備建議</div>
+                                    <ul class="space-y-1.5">
+                                        <li>✦ 廣角鏡頭（14-24mm）：神殿/金字塔必備</li>
+                                        <li>✦ 中焦鏡頭（50-85mm）：人物特寫、壁畫細節</li>
+                                        <li>✦ 吹塵球：沙漠環境必備清潔工具</li>
+                                        <li>✦ 備用記憶卡 & 行動電源：每天照片量極大</li>
+                                    </ul>
+                                </div>
+                                <div class="border border-stone-200 rounded-lg p-4">
+                                    <div class="font-bold text-stone-800 mb-2">🚫 注意事項</div>
+                                    <ul class="space-y-1.5">
+                                        <li>✦ 文明博物館木乃伊廳：<span class="text-red-600 font-bold">嚴禁拍照</span></li>
+                                        <li>✦ 帝王谷陵墓：禁止閃光燈，手機可拍</li>
+                                        <li>✦ 清真寺室內：需事先詢問允許後再拍</li>
+                                        <li>✦ 努比亞村居民：徵求同意後再拍人像</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // ========== Tab switching ==========
+        const tabs = ['overview', 'itinerary', 'prep', 'culture'];
+        function switchTab(tab) {
+            tabs.forEach(t => {
+                const view = document.getElementById(`view-${t}`);
+                const btn = document.getElementById(`tab-${t}`);
+                if (t === tab) {
+                    view.classList.remove('inactive-section');
+                    view.classList.add('active-section');
+                    btn.classList.add('tab-active');
+                    btn.classList.remove('text-slate-500', 'hover:text-slate-700');
+                } else {
+                    view.classList.add('inactive-section');
+                    view.classList.remove('active-section');
+                    btn.classList.remove('tab-active');
+                    btn.classList.add('text-slate-500', 'hover:text-slate-700');
+                }
+            });
+            if (tab === 'itinerary' && document.getElementById('days-nav').children.length === 0) {
+                renderItineraryNav();
+                switchDay(1);
+            }
+        }
+
+        // ========== Itinerary Data (15 days) ==========
+        const itineraryData = {
+            1: {
+                route: "台北 ✈ 杜拜",
+                temp: "機上偏冷",
+                outfit: "輕便T + 連帽外套",
+                gear: "頸枕、耳塞",
+                shopping: "-",
+                note: "23:40 EK-367 起飛，展開古文明壯遊之旅。機上餐點自理，建議睡眠充足。",
+                hotel: "夜宿機上",
+                highlights: [
+                    { title: "啟程", desc: "桃園機場集合辦理登機手續。飛行時間約9小時55分至杜拜，轉機後再4小時15分抵達開羅。", igTip: "登機證與護照合照，宣告壯遊展開！ #埃及法老傳說", history: "阿聯酋航空（EK）為世界最大長途航空公司之一，總部位於杜拜，以豪華服務聞名。杜拜轉機可欣賞這座現代奇蹟城市的壯觀夜景。" }
+                ]
+            },
+            2: {
+                route: "杜拜 ✈ 開羅｜舊開羅巡禮",
+                temp: "14-26°C",
+                outfit: "亞麻襯衫(藍) + 奇諾褲",
+                gear: "人工淚液",
+                shopping: "機場電信卡（行程已含10GB）",
+                note: "10:25 EK-927 抵達開羅。下午走訪舊城區。門票含薩拉丁城堡、阿里清真寺。",
+                hotel: "5★ Triumph Luxury Hotel 或 Sonesta Hotel Tower",
+                highlights: [
+                    { title: "薩拉丁城堡（Saladin Citadel）", desc: "1176年薩拉丁蘇丹為抵抗十字軍東征而建，居高臨下可遠眺開羅全貌，天氣好時甚至可遙望吉薩金字塔。", igTip: "以清真寺雄偉側影為背景，搭配開羅城景拍出具歷史厚重感的遠景照。", history: "薩拉丁（Saladin，1137-1193）是最著名的伊斯蘭英雄，以騎士精神對待十字軍著稱。城堡至今仍是開羅最具辨識度的地標。" },
+                    { title: "穆罕默德・阿里清真寺（雪花石膏清真寺）", desc: "19世紀鄂圖曼式建築，大量使用雪花石膏裝飾門面，故有「雪花石膏清真寺」之稱，融合了土耳其建築風格。", igTip: "清真寺內部宏偉的吊燈群是絕佳攝影題材，建議使用廣角鏡頭仰拍穹頂。", history: "由穆罕默德・阿里帕夏（1805-1848）下令建造，他是現代埃及的奠基者，以鄂圖曼宮廷贈送的時鐘換得巴黎的方尖碑（現立於協和廣場）。" },
+                    { title: "懸空教堂（聖芭芭拉教堂）", desc: "埃及最古老的科普特基督教遺址，建於巴比倫要塞的城門廢墟上，外觀看似懸浮於空中。", igTip: "捕捉教堂鑲嵌木造天花板（諾亞方舟造型）的幾何細節特寫。", history: "埃及科普特基督徒是世界上最古老的基督徒群體之一，傳說聖家庭（聖母瑪利亞帶著嬰兒耶穌）逃難時曾在此地避難。" }
+                ]
+            },
+            3: {
+                route: "開羅｜金字塔演化之旅・文明博物館",
+                temp: "15-27°C",
+                outfit: "亞麻襯衫(白) + 大絲巾",
+                gear: "廣角鏡",
+                shopping: "古文明書籤 $5-10 USD（3折砍起）",
+                note: "世界最古老金字塔巡禮。門票含：階梯、彎曲、紅色金字塔、埃及文明博物館。晚上建議整理洗衣。",
+                hotel: "5★ Triumph Luxury Hotel 或 Sonesta Hotel Tower",
+                highlights: [
+                    { title: "階梯金字塔（Djoser Step Pyramid）", desc: "世界最古老的金字塔，約4700年歷史。由宰相印何闐設計，首次採用切石堆砌，奠定後世金字塔的建築基礎。", igTip: "站在廣大砂質廣場上，利用周圍的廢墟石牆做為前景，形成縱深構圖。", history: "印何闐（Imhotep）不只是建築師，也是醫師、祭司和天文學家，死後被神化為醫學之神，古希臘人將他等同於醫神阿斯克勒庇俄斯。" },
+                    { title: "彎曲金字塔（Bent Pyramid）", desc: "法老斯尼夫魯的第一座金字塔，因建造中途發現地基不穩，工程師緊急改變傾斜角度，形成獨特的「折腰」外觀。", igTip: "利用沙漠地面做前景，以廣角低角度仰拍，強調其不尋常的造型。", history: "彎曲金字塔不僅是建築技術過渡期的活見證，其內部也是少見保留原始石灰岩外殼的金字塔，泛著溫暖的玫瑰金色光澤。" },
+                    { title: "紅色金字塔（Red Pyramid）", desc: "埃及第三大金字塔，也是第一座成功的平滑面真正金字塔。因其紅色石灰石外觀得名，亦開放入內參觀。", igTip: "光線在傍晚時將石塊染成更深的紅橙色，是最佳拍攝時機。", history: "同為斯尼夫魯所建，斯尼夫魯是古埃及最偉大的建造者之一，前後建造了三座金字塔，留下了從「不成功」到「完美」的技術進化紀錄。" },
+                    { title: "埃及文明博物館（NMEC）", desc: "2021年開幕，館內展示了22具皇家木乃伊，包含拉美西斯二世本人！以現代多媒體展示技術，深入呈現埃及五千年文明。", igTip: "博物館大廳的拉美西斯二世巨型石像（來自孟菲斯的原件）極具震撼感，適合廣角仰拍。木乃伊廳嚴禁攝影。", history: "2021年4月，22具法老與皇后的木乃伊以盛大的「金色遊行」儀式，從舊埃及博物館移至此處，全球直播，觀看人次超過數億。" }
+                ]
+            },
+            4: {
+                route: "開羅 → 巴哈利亞綠洲｜黑白沙漠",
+                temp: "10-28°C（日夜溫差大）",
+                outfit: "機能風：排汗T + 薄羽絨（凌晨必備）",
+                gear: "🚨 吹塵球、人工淚液（高粉塵日）",
+                shopping: "水晶原石 $5-15 USD（路邊隨喜殺價）",
+                note: "⚠️ 粉塵警告日。長途拉車 371km。今晚夜宿白沙漠星空帳篷（Shahrazad Camp）。",
+                hotel: "沙漠帳篷 Shahrazad Camp",
+                highlights: [
+                    { title: "黑沙漠（Black Desert）", desc: "火山玄武岩覆蓋的黑色山丘地帶，風化的黑石散落各處，與藍天形成強烈對比，彷彿外星地表。吉普車衝沙是必備體驗。", igTip: "站在吉普車旁戴上墨鏡，拍出硬派探險家風格，以黑色山丘做背景。", history: "黑沙漠的地質成因是數百萬年前的火山噴發，鐵質玄武岩岩石散落各地，古代商隊穿越此地前往利比亞。" },
+                    { title: "水晶山（Crystal Mountain）", desc: "沙漠中的神奇地標，地殼壓力將水晶擠出地面，在陽光照射下閃閃發光，是沙漠探險不可錯過的亮點。", igTip: "特寫地面散落的天然水晶原石，讓光線穿透結晶拍出迷幻感。", history: "此地的水晶為方解石（Calcite）和石英（Quartz），經過地殼運動從地底擠壓而出，每一塊都歷經了數百萬年的時光。" },
+                    { title: "白沙漠星空帳篷", desc: "入住白沙漠唯一帳篷旅館，內附獨立冷熱水衛浴。夜晚在幾乎沒有光污染的沙漠中仰望銀河，是城市中永遠無法體驗的震撼。", igTip: "以仰角拍攝滿天星空與白色奇石的剪影，使用手機夜模式或相機長曝光拍攝銀河。", history: "巴哈利亞綠洲在2000年前後發現大量「黃金木乃伊」（Golden Mummies），超過250具塗金面具的羅馬時代木乃伊，考古發掘至今仍在持續。" }
+                ]
+            },
+            5: {
+                route: "白沙漠 → 開羅｜洞穴教堂・哈利利市集",
+                temp: "14-27°C",
+                outfit: "亞麻襯衫(軍綠) + 工裝長褲",
+                gear: "🚨 防風墨鏡（粉塵日）、AirTag",
+                shopping: "手工莎草紙 $15-30 USD（5折成交宜）",
+                note: "⚠️ 粉塵警告日（返途）。早上欣賞白沙漠奇景，下午返回開羅，造訪聖西蒙洞穴教堂與哈利利市集。",
+                hotel: "5★ Triumph Luxury Hotel 或 Sonesta Hotel Tower",
+                highlights: [
+                    { title: "白沙漠（White Desert）", desc: "成片的雪白石灰岩，在風化作用下形成兔子、蘑菇、雞等各式奇特造型。清晨光線將奇石染成金黃，是最夢幻的視覺體驗。", igTip: "利用清晨斜射光，捕捉純白與金黃的漸層對比。建議使用廣角鏡頭，將大範圍的奇石景觀一次收入鏡頭。", history: "白沙漠的形成原因是數百萬年前的海底沉積石灰岩，歷經千萬年的風化與侵蝕，呈現如此超現實的地貌，被稱為「撒哈拉的夢境」。" },
+                    { title: "聖西蒙洞穴教堂（Cave Church）", desc: "全埃及最大的教堂，可容納近兩萬名信徒！開鑿於開羅的岩壁山洞之中，壁面雕刻著精美的宗教壁畫，是當地人才知道的打卡秘境。", igTip: "從洞穴入口往內看，洞頂的弧形天空剪影極具視覺衝擊，是獨特的構圖角度。", history: "聖西蒙教堂供奉的聖人西蒙是科普特教最重要的聖徒之一，傳說他使山岳移動。教堂在1975年由垃圾場山（Garbage City）的居民開始建設，融合了信仰與建築的奇蹟。" },
+                    { title: "哈利利傳統大市集（Khan el-Khalili）", desc: "從西元14世紀開始就是開羅的商業中心，也是中東最大的露天市集。迷宮般的巷弄中，燈籠、香料、紀念品琳瑯滿目，在此享受殺價購物的樂趣。", igTip: "在市集中尋找彩色馬賽克燈的店鋪，利用暖色光源拍出濃厚的異國情調。傍晚燈光亮起後氣氛更佳。", history: "哈利利市集以建立者 Djaharks el-Khalili 命名，至今仍是開羅最重要的貿易與文化地標。許多店鋪傳承已達數百年，手工藝匠人仍在現場製作器物。" }
+                ]
+            },
+            6: {
+                route: "開羅 ✈ 亞斯文 → 阿布辛貝｜聲光秀",
+                temp: "16-33°C",
+                outfit: "亞麻(白)＋聲光秀備薄外套",
+                gear: "護目墨鏡、人工淚液",
+                shopping: "聲光秀導覽冊 $10-15 USD（固定價）",
+                note: "飛抵亞斯文後，前往費拉島參觀愛西斯神殿，再拉車282km至阿布辛貝。★入住阿布辛貝一晚（獨家安排）。晚上觀賞聲光秀。",
+                hotel: "Seti Abu Simbel Lake Resort 或 Azal Lagoons Resort",
+                highlights: [
+                    { title: "費拉島・愛西斯神殿（Temple of Isis, Philae）", desc: "供奉伊西斯女神的聖地，原本位於尼羅河中的費拉島，後因亞斯文水壩建設水位上升，於1970年代整體搬遷至阿吉勒基亞島（Agilkia Island）。", igTip: "乘船抵達小島的過程是絕佳拍攝機會，可拍攝神殿在蔚藍水面中的倒影。", history: "愛西斯神殿是托勒密時代的建築，也是埃及異教信仰最後的堡壘。西元550年，基督徒拜占庭皇帝才將其關閉。這裡也是羅塞塔石碑最初被發現的地點附近。" },
+                    { title: "阿布辛貝神殿聲光秀（Sound & Light Show）", desc: "全埃及最壯觀的聲光秀，在滿天星斗下，燈光投影出法老拉美西斯二世一生的豐功偉業，並講述神殿搬遷的奇蹟故事。約60分鐘。", igTip: "聲光秀建議錄製短影音，更能呈現磅礡的音效與視覺震撼。靜態照片建議使用三腳架長曝光。", history: "聲光秀不只是娛樂，更是一堂生動的歷史課。它涵蓋了卡迭石戰役（Kadesh，約西元前1274年）——人類有文字記錄以來最早的和平條約談判。" }
+                ]
+            },
+            7: {
+                route: "阿布辛貝神殿（晨光）→ 亞斯文・登河輪",
+                temp: "17-34°C",
+                outfit: "亞麻(原麻色) + 涼鞋",
+                gear: "廣角鏡頭",
+                shopping: "香料/洛神花茶 $5-10 USD/包（亞斯文品質最純）",
+                note: "★早起二進阿布辛貝神殿賞晨光（獨家安排，避開白天大批旅行團）。下午返回亞斯文登上尼羅河豪華郵輪。郵輪期間（D7-D9）可送洗衣物。",
+                hotel: "5★ MS Royal Signature 或 MS Royal BeauRivage 或 MS Salacia",
+                highlights: [
+                    { title: "阿布辛貝神殿（晨光特賞）", desc: "清晨的阿布辛貝沒有白天擁擠的人潮，迎著納瑟湖的晨曦，靜靜細賞四尊高達20米的拉美西斯二世巨大雕像。神殿入口旁也有小型的奈菲爾塔利神殿。", igTip: "利用早晨柔和的金色光線，站在巨大雕像腳下仰拍，以腳掌大小對比強調雕像的宏偉。", history: "四尊拉美西斯二世雕像中，其中一尊因古代地震已部分崩塌，頭像落在地面。由於這是古代地震前就已存在的狀態，UNESCO刻意保留此「原始殘缺」作為歷史見證。" },
+                    { title: "努比亞村落巡禮・騎駱駝", desc: "騎乘駱駝深入努比亞村，在熱情款待下探訪傳統民居。努比亞人是尼羅河最古老的居民，以鮮豔色彩裝飾的房屋和獨特的飲食文化著稱。", igTip: "騎駱駝時選擇下午光線（避免正午強烈陰影），捕捉以尼羅河或金黃沙漠為背景的輪廓照。", history: "努比亞文明比埃及更古老，曾建立過統治埃及的第25王朝（黑法老）。1960年代亞斯文水壩建設導致大量努比亞村落被淹沒，居民被迫遷離，這段歷史是埃及文化遷徙的重要篇章。" },
+                    { title: "白色阿拉伯風帆船（Felucca）", desc: "搭乘傳統無動力帆船，順著尼羅河和風航行。帆船是古埃及人最主要的交通工具，千年來造型幾乎未變。", igTip: "船頭仰角拍攝白色風帆，或請同行者從背後拍出望向尼羅河的背影，十分有意境。", history: "古埃及人視尼羅河為生命根源，也是通往來世的道路。法老的木乃伊就是乘船從東岸（生者之地）運往西岸（死者之地）的帝王谷。" }
+                ]
+            },
+            8: {
+                route: "尼羅河巡航｜孔翁波・艾德芙",
+                temp: "17-33°C",
+                outfit: "亞麻(藍) + 遮陽帽",
+                gear: "18-135mm 鏡頭、零鈔",
+                shopping: "鱷魚/老鷹雕像 $20-40 USD（4折起談）",
+                note: "★搭乘馬車前往艾德芙荷魯斯神殿（記得備馬車小費 $2/人）。門票含孔翁波雙神殿、艾德芙荷魯斯神殿及接駁馬車。今日為郵輪洗衣好時機。",
+                hotel: "5★ 尼羅河豪華郵輪",
+                highlights: [
+                    { title: "孔翁波雙神殿（Kom Ombo Temple）", desc: "全埃及唯一同時供奉兩位神明的神殿——北側老鷹神荷魯斯、南側鱷魚神索貝克，兩側對稱但各自獨立。殿內保存有大量鱷魚木乃伊，以及令人驚嘆的古代醫療器具壁畫。", igTip: "特寫牆面上如同現代手術刀、鑷子、骨鋸的醫療器具刻痕，是拍攝「古今對照」的絕佳題材。", history: "壁畫中可辨識出的醫療器具包括：手術刀、鑷子、骨鑽、灌腸器等，證明古埃及三千年前便具備相當水準的外科技術，有些工具甚至與現代器械幾乎相同。" },
+                    { title: "艾德芙・荷魯斯神殿（Temple of Horus, Edfu）", desc: "埃及保存最完整的神殿，由托勒密三世至十二世歷代法老花費了約180年才完成。殿外兩尊巨大的花崗岩老鷹神（荷魯斯）雕像是必拍地標。", igTip: "神殿外的花崗岩荷魯斯老鷹雕像前是必拍點，與黑色老鷹合影時特別注意光線方向。", history: "艾德芙神殿的壁畫詳細描述了荷魯斯與賽特（Set）的史詩大戰，這場神話中的衝突象徵著光明與黑暗、善與惡的永恆對立。" }
+                ]
+            },
+            9: {
+                route: "艾德芙 → 路克索｜東岸神殿",
+                temp: "16-32°C",
+                outfit: "亞麻(深藍)+奇諾褲（郵輪晚宴風）",
+                gear: "廣角鏡頭",
+                shopping: "埃及長絨棉T $25-50 USD（送重要客戶推薦）",
+                note: "下午路克索靠岸。卡納克與路克索神殿。門票含：伊斯納水閘、卡納克神殿、路克索神殿。今日郵輪洗衣（若昨日未洗）。",
+                hotel: "5★ 尼羅河豪華郵輪",
+                highlights: [
+                    { title: "卡納克神殿（Karnak Temple Complex）", desc: "世界最大古代神廟建築群，佔地約100公頃。「大柱廳」（Hypostyle Hall）擁有134根高達21米的巨大石柱。殿內有埃及最高的方尖碑（29.2公尺）及一座蜣螂（聖甲蟲）雕像。", igTip: "穿梭在巨柱間，等待陽光從柱頂縫隙灑下的「耶穌光」瞬間。或在大柱廳中央找到最深的透視延伸角度，製造無盡延伸的視覺效果。", history: "從中王國到托勒密時代，歷經超過30位法老不斷擴建，有時後繼者甚至拆毀前任的構造再重建。這裡同時是政治、宗教與財富的核心，神殿擁有自己的農田、工廠和奴隸。" },
+                    { title: "路克索神殿（Luxor Temple）", desc: "主要由阿蒙霍特普三世和拉美西斯二世建造，入口處曾有兩座方尖碑，其中一座於1836年送給法國，現立於巴黎協和廣場。夜晚燈光照射下氣氛神秘迷人。", igTip: "黃昏至夜晚點燈時段最具神秘氛圍。方尖碑底座在燈光下拍出金色光暈效果特別美。", history: "路克索神殿的入口牆還保留著13世紀伊斯蘭清真寺（阿布哈嘉清真寺）的建築遺跡，直接疊建在神殿上方，是宗教交融的獨特見證。" }
+                ]
+            },
+            10: {
+                route: "路克索西岸｜帝王谷・女王神殿・哈布神殿",
+                temp: "16-32°C",
+                outfit: "亞麻(卡其)+工裝褲（冒險風）",
+                gear: "廣角鏡頭、充足飲水（極度暴曬）",
+                shopping: "訂製金銀卡地許 $50-150 USD（送重要客戶首選）",
+                note: "西岸毫無遮蔽，極度炎熱，務必備好防曬。下車參觀曼儂巨像。門票含哈姬蘇女王神殿、帝王谷（3座陵墓）、哈布神殿。",
+                hotel: "5★ Hilton Luxor Resort & Spa 或 Steigenberger Nile Palace",
+                highlights: [
+                    { title: "帝王谷（Valley of the Kings）", desc: "約60座法老與貴族的地下陵墓藏於此谷。進入其中三座陵墓，欣賞歷經3000年仍色彩鮮豔的壁畫，壁畫描繪亡靈書的審判試煉場景。", igTip: "多數陵墓可手機拍照（禁閃光燈），拍攝甬道的深邃透視感，以及壁畫精緻的色彩細節。光線不足處建議開啟手機光源補光。", history: "1922年英國考古學家霍華德・卡特在帝王谷發現了幾乎原封未動的圖坦卡門（KV62），全世界為之震驚。其黃金面具與超過5000件陪葬品現藏於開羅大埃及博物館。" },
+                    { title: "哈姬蘇女王神殿（Hatshepsut Temple）", desc: "古埃及最著名的女法老，神殿依山而建，三層柱廊式建築極具現代感，常被認為是世界建築史上最美的建築之一。", igTip: "站在引道中央，利用對稱構圖拍出氣勢磅礡的全景照。早晨光線將神殿染成溫暖金黃色，效果絕佳。", history: "哈特薛普蘇特（Hatshepsut，約1507-1458 BC）以男性形象統治（戴假鬍子、使用男性稱謂），卻是古埃及最成功的統治者之一，發展貿易、興建大量建築。後繼者圖特摩斯三世試圖抹去她的所有紀錄，但未能成功。" },
+                    { title: "哈布神殿（Medinet Habu，拉美西斯三世祭殿）", desc: "全埃及保存最完整、色彩最鮮豔的神殿。特有的「凹雕」技法使浮雕在陽光下形成深刻的陰影輪廓，更難以被時間磨損，是市場上鮮少安排卻最被低估的景點。", igTip: "特寫神殿外牆的凹雕浮雕細節，以側光拍攝才能顯現出凹雕的立體感與深度。", history: "拉美西斯三世（約1184-1153 BC）被視為「最後的偉大法老」，其統治期間多次抵禦外敵入侵，尤其是「海上民族」（Sea Peoples）的入侵。神殿壁畫詳細記錄這些戰役，是人類最早的海戰紀錄之一。" }
+                ]
+            },
+            11: {
+                route: "路克索 → 丹德拉神殿 → 虎加達",
+                temp: "17-27°C",
+                outfit: "亞麻(白) + 短褲（度假風）",
+                gear: "GaN 65W 充電頭、相機",
+                shopping: "丹德拉之燈複製品 $20-40 USD（特殊紀念品）",
+                note: "★特別安排深入地下室與頂樓（含丹德拉之燈及黃道十二宮門票）。拉車236km至虎加達。今日在飯店洗衣好時機。",
+                hotel: "5★ Marriott Beach Resort 或 Movenpick Soma Bay 或 Hilton Hurghada Plaza",
+                highlights: [
+                    { title: "丹德拉神殿（Dendera Temple of Hathor）", desc: "埃及最美的神殿之一，哈索爾女神柱頭（牛角臉像）、完整保存的湛藍星象圖天花板，以及唯一擁有多個地下室和秘密通道的神殿。克麗奧佩脫拉七世的側臉浮雕刻於外牆。", igTip: "強烈建議用廣角鏡頭仰拍湛藍的星空穹頂，或站在壯麗的哈索爾列柱走廊中央取景。地下室光線昏暗，建議開啟相機高ISO。", history: "「黃道十二宮」天花板（Dendera Zodiac）是人類最早的星象圖之一，繪製了古埃及人對天文的精確觀測。原件於1821年被法國人取走，現存巴黎羅浮宮。現存天花板為完整複製品，色彩更接近原始狀態。" },
+                    { title: "丹德拉之燈（Dendera Light）", desc: "地下室最著名的浮雕——描繪一條蛇從蓮花中升起的神秘圖像。部分研究者認為這是古代電燈泡的早期概念圖，引發廣泛討論，也是埃及最著名的「未解謎題」之一。", igTip: "地下室狹窄昏暗，拍攝時需借助手機補光或相機高ISO，特寫浮雕的細節線條。", history: "主流埃及學界認為此浮雕描繪的是哈索爾神話中的「原始創世」——蛇（埃及生命象徵）從神聖蓮花中誕生，象徵宇宙的起源。但其精確的線條確實與現代陰極管燈泡驚人相似。" }
+                ]
+            },
+            12: {
+                route: "虎加達｜紅海玻璃底船・海灘 → 開羅",
+                temp: "18-28°C",
+                outfit: "輕便襯衫 + 泳褲",
+                gear: "防水袋、浮潛面鏡",
+                shopping: "香精精品（機場或工廠）",
+                note: "搭乘玻璃底船觀賞紅海珊瑚礁，享受海灘休閒後搭機返回開羅。下車參觀紅海海灘。今日最後洗衣機會。",
+                hotel: "5★ Cairo Marriott Hotel（尼羅河景房）或 Sofitel Cairo",
+                highlights: [
+                    { title: "紅海玻璃底船（Glass Bottom Boat）", desc: "航行至紅海海域，透過船底玻璃欣賞色彩斑斕的熱帶魚和珊瑚礁。紅海因無污染、能見度極高，是世界頂級潛水勝地之一。", igTip: "對準玻璃底拍攝游過的熱帶魚，建議使用防水手機殼以防水氣弄濕鏡頭。", history: "紅海是世界上含鹽量最高的海域之一，因其孤立的地質條件孕育了超過1,200種魚類和200種珊瑚，其中44種為當地特有種。古埃及人稱紅海為「阿紫海」（Ažu Sea），是通往遙遠Punt之地（現代衣索比亞）的貿易通道。" },
+                    { title: "虎加達海灘自由活動", desc: "享受世界排名前十的潛水聖地，清澈的紅海海水和白沙海灘。可選擇浮潛、水上活動或純粹海灘放鬆，是整趟旅程最輕鬆的時段。", igTip: "傍晚在海灘拍攝紅海日落剪影，是整趟旅程最放鬆、最有度假感的攝影時刻。", history: "虎加達（Hurghada）在1980年代之前還是個小漁村，後因其絕佳的潛水環境而迅速發展成國際知名度假勝地，現在每年吸引超過百萬觀光客。" }
+                ]
+            },
+            13: {
+                route: "開羅｜吉薩金字塔群・埃及博物館",
+                temp: "14-27°C",
+                outfit: "亞麻(白) + 戰利品絲巾",
+                gear: "🚨 廣角鏡、人工淚液（高粉塵日）",
+                shopping: "小金字塔模型 $10-20 USD",
+                note: "⚠️ 粉塵警告日（金字塔內部空氣悶熱、粉塵多）。★特別安排進入古夫金字塔內部！午餐中式料理八菜一湯，晚餐百萬夜景餐廳。",
+                hotel: "5★ Cairo Marriott Hotel（尼羅河景房）或 Sofitel Cairo",
+                highlights: [
+                    { title: "★入內古夫金字塔（特別安排）", desc: "市場上鮮少安排的珍稀體驗！進入世界最大、最知名的金字塔內部，沿著47米長、傾斜26度的「大迴廊」攀爬至法老墓室。空間狹窄，但歷史震撼感無與倫比。", igTip: "金字塔內部嚴禁拍照，請以眼睛深刻記憶這段穿越千年的空間體驗。", history: "古夫（Khufu，約西元前2560 BC）的金字塔由230萬塊平均2.5噸的石塊堆砌，高度138.8米，建造時間約20年，動員了約10萬名工人。近年衛星掃描發現金字塔內部仍有未知的隱藏空間。" },
+                    { title: "吉薩金字塔群・獅身人面像・騎駱駝", desc: "站在古代七大奇蹟唯一倖存者面前，以沙漠與金字塔為背景騎乘駱駝。獅身人面像（Sphinx）高約20米，長73米，被認為是法老卡夫拉的面容。", igTip: "利用錯位拍攝「親吻獅身人面像」或「手捏金字塔」等經典錯視照，或找好角度讓金字塔在你身後整齊排列。", history: "獅身人面像的鼻子傳說是拿破崙的砲兵用大砲射掉的，但這是錯誤的。真實紀錄顯示鼻子在西元1378年被一位反偶像崇拜的蘇菲派學者損毀。" },
+                    { title: "埃及博物館（Egyptian Museum）", desc: "1902年建立，是全埃及第一間博物館，收藏超過10萬件古物。最重要的鎮館之寶是圖坦卡門的黃金面具，以及各種法老的木乃伊與陪葬品。", igTip: "博物館外的粉紅色外牆是開羅最具識別度的地標之一，拍攝博物館正面時可加入噴水池做前景。", history: "埃及博物館是全世界最重要的考古博物館之一，即使部分藏品已陸續移至大埃及博物館，此處仍有約10萬件文物，其中大多數來不及展示，存放在地下倉庫中。" }
+                ]
+            },
+            14: {
+                route: "開羅｜大埃及博物館・香精工廠・回程",
+                temp: "14-26°C",
+                outfit: "亞麻(藍) + 舒適長褲",
+                gear: "行李秤（確認行李重量）",
+                shopping: "高品質香精油 $50-100 USD（送重要客戶推薦）",
+                note: "造訪大埃及博物館（GEM）與香精、莎草紙工廠。午餐風帆船燒烤饗宴。19:30 搭乘 EK-924 飛返杜拜。夜宿機上。",
+                hotel: "夜宿機上",
+                highlights: [
+                    { title: "大埃及博物館（Grand Egyptian Museum，GEM）", desc: "全球最大單一文明博物館，佔地50萬平方公尺，12個主要展廳，收藏了埃及70萬年歷史的寶藏，包含圖坦卡門的5000多件陪葬品與著名的黃金面具。", igTip: "博物館前衛的幾何建築外觀（以巨型玻璃幕牆和拉美西斯二世雕像為標誌）本身就是絕佳的建築攝影題材。", history: "大埃及博物館（GEM）耗資超過10億美元、建設歷時20年，是埃及政府推動文化旅遊的最重要投資。館內的「圖坦卡門廳」是世界上最大的單一法老收藏展廳。" },
+                    { title: "香精・莎草紙工廠參觀", desc: "親身體驗古埃及傳統工藝：無酒精香精油的萃取工藝（源自法老時代的蒸餾技術），以及莎草紙的手工製作過程（人類最早的書寫材料）。", igTip: "拍攝桌上琳瑯滿目的精緻手工玻璃瓶，光線穿透展現奢華感。莎草紙製作過程的細節也是很好的紀實攝影題材。", history: "古埃及人相信香氣是神的呼吸（kyphi），蓮花與麝香不僅用於美容，更是聖殿祭祀的必備供品。埃及長絨棉也是從法老時代就開始種植的品種，至今仍是全球最高品質的棉花。" }
+                ]
+            },
+            15: {
+                route: "杜拜 ✈ 台北",
+                temp: "台灣氣溫",
+                outfit: "輕便T + 連帽外套",
+                gear: "護照確認",
+                shopping: "杜拜免稅品（轉機期間）",
+                note: "03:40 EK-366 從杜拜起飛，15:35 抵達桃園國際機場，圓滿結束15天的古文明深度壯遊！",
+                hotel: "返回台灣",
+                highlights: [
+                    { title: "滿載而歸", desc: "整理豐富的照片與美好回憶，為這趟跨越五千年文明的旅程畫下完美的句號。", igTip: "精選整趟旅程最具代表性的3-5張照片，配上旅程心得，發表一篇精彩的旅遊總結。", history: "您用15天親眼見證了人類最偉大的文明遺產——從世界最古老的金字塔、神祕的帝王谷、震撼心靈的阿布辛貝，到廣袤的黑白沙漠。這段旅程不只是觀光，更是一場與五千年前人類智慧的深刻對話。" }
+                ]
+            }
+        };
+
+        // ========== Itinerary Rendering ==========
+        function renderItineraryNav() {
+            const navContainer = document.getElementById('days-nav');
+            const dayLabels = {
+                1: '台北→杜拜', 2: '→開羅', 3: '金字塔巡禮', 4: '黑白沙漠',
+                5: '白沙漠→開羅', 6: '→阿布辛貝', 7: '登船', 8: '雙神殿',
+                9: '→路克索', 10: '西岸帝王谷', 11: '丹德拉→虎加達', 12: '紅海→開羅',
+                13: '吉薩金字塔', 14: '大博物館→回程', 15: '返回台北'
+            };
+            const dustDays = [4, 5, 13];
+            const laundryDays = [3, 8, 9, 12];
+            for (let i = 1; i <= 15; i++) {
+                const dayBtn = document.createElement('button');
+                dayBtn.id = `btn-day-${i}`;
+                dayBtn.className = 'flex-shrink-0 md:w-full text-left px-3 py-2.5 rounded-lg text-xs font-medium transition-all mb-0.5 hover:bg-amber-50 flex flex-col';
+                dayBtn.onclick = () => switchDay(i);
+                let badges = '';
+                if (dustDays.includes(i)) badges += '<span style="font-size:0.6rem;color:#dc2626">🚨粉塵</span>';
+                if (laundryDays.includes(i)) badges += '<span style="font-size:0.6rem;color:#2563eb">👕洗衣</span>';
+                dayBtn.innerHTML = `
+                    <span class="font-bold text-amber-800 day-num">Day ${i}</span>
+                    <span class="text-slate-400 text-xs truncate max-w-[160px]">${dayLabels[i]}</span>
+                    <div class="flex gap-1">${badges}</div>
+                `;
+                navContainer.appendChild(dayBtn);
+            }
+        }
+
+        function switchDay(day) {
+            for (let i = 1; i <= 15; i++) {
+                const btn = document.getElementById(`btn-day-${i}`);
+                if (!btn) continue;
+                if (i === day) {
+                    btn.classList.add('day-active');
+                    btn.querySelector('.day-num').style.color = 'white';
+                } else {
+                    btn.classList.remove('day-active');
+                    btn.querySelector('.day-num').style.color = '';
+                }
+            }
+            renderDailyContent(day);
+            const activeBtn = document.getElementById(`btn-day-${day}`);
+            if (activeBtn && window.innerWidth < 768) {
+                activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }
+        }
+
+        function renderDailyContent(day) {
+            const data = itineraryData[day];
+            const contentContainer = document.getElementById('daily-content');
+            const dustWarning = [4, 5, 13].includes(day) ? `<div class="dust-warning p-3 mb-4 text-sm"><strong class="text-red-700">🚨 高粉塵警告：</strong><span class="text-red-600">今日為高粉塵風險日，請隨身攜帶人工淚液並全程配戴防風墨鏡。</span></div>` : '';
+            const laundryNote = [3, 8, 9, 12].includes(day) ? `<div class="bg-blue-50 border-l-4 border-blue-400 p-3 mb-4 text-sm rounded-r-lg"><strong class="text-blue-700">👕 洗衣提醒：</strong><span class="text-blue-600">今日為建議洗衣日，請善用飯店或郵輪洗衣服務。</span></div>` : '';
+
+            let highlightsHTML = '';
+            data.highlights.forEach(hl => {
+                highlightsHTML += `
+                    <div class="card mb-4 overflow-hidden">
+                        <div class="p-5 border-b border-amber-100">
+                            <h4 class="text-lg font-bold text-slate-800 mb-2 flex items-center gap-2"><span class="text-amber-500">✦</span>${hl.title}</h4>
+                            <p class="text-slate-600 text-sm leading-relaxed">${hl.desc}</p>
+                        </div>
+                        <div class="bg-amber-50 p-4">
+                            <div class="text-sm font-bold text-amber-700 mb-1 flex items-center gap-1"><i data-lucide="camera" class="h-3.5 w-3.5"></i> 攝影 & 取景建議</div>
+                            <p class="text-amber-800 text-xs leading-relaxed">${hl.igTip}</p>
+                        </div>
+                        <div class="bg-indigo-50 p-4">
+                            <div class="text-sm font-bold text-indigo-700 mb-1 flex items-center gap-1"><i data-lucide="book-open" class="h-3.5 w-3.5"></i> 歷史人文知識</div>
+                            <p class="text-indigo-700 text-xs leading-relaxed italic">${hl.history}</p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            contentContainer.innerHTML = `
+                <div class="max-w-3xl mx-auto pb-10 fade-in">
+                    <h2 class="text-2xl font-bold section-title mb-1">Day ${day}</h2>
+                    <h3 class="text-lg gold font-semibold mb-4">${data.route}</h3>
+                    ${dustWarning}${laundryNote}
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+                        <div class="bg-white rounded-xl p-3 text-center border border-amber-100 shadow-sm">
+                            <i data-lucide="thermometer" class="h-4 w-4 text-blue-500 mx-auto mb-1"></i>
+                            <div class="text-xs text-slate-400 mb-0.5">氣溫</div>
+                            <div class="font-bold text-xs text-slate-700">${data.temp}</div>
+                        </div>
+                        <div class="bg-white rounded-xl p-3 text-center border border-amber-100 shadow-sm">
+                            <i data-lucide="shirt" class="h-4 w-4 text-emerald-500 mx-auto mb-1"></i>
+                            <div class="text-xs text-slate-400 mb-0.5">穿搭</div>
+                            <div class="font-bold text-xs text-slate-700">${data.outfit}</div>
+                        </div>
+                        <div class="bg-white rounded-xl p-3 text-center border border-amber-100 shadow-sm">
+                            <i data-lucide="backpack" class="h-4 w-4 text-purple-500 mx-auto mb-1"></i>
+                            <div class="text-xs text-slate-400 mb-0.5">必備</div>
+                            <div class="font-bold text-xs text-slate-700">${data.gear}</div>
+                        </div>
+                        <div class="bg-white rounded-xl p-3 text-center border border-amber-100 shadow-sm">
+                            <i data-lucide="shopping-bag" class="h-4 w-4 text-amber-500 mx-auto mb-1"></i>
+                            <div class="text-xs text-slate-400 mb-0.5">推薦購買</div>
+                            <div class="font-bold text-xs text-slate-700">${data.shopping}</div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-100 rounded-xl p-4 mb-4 text-sm flex items-start gap-2">
+                        <i data-lucide="info" class="h-4 w-4 text-amber-600 flex-shrink-0 mt-0.5"></i>
+                        <div>
+                            <strong class="text-slate-700">備註：</strong><span class="text-slate-600">${data.note}</span>
+                            <div class="mt-1"><strong class="text-slate-600">住宿：</strong><span class="text-teal-700 font-medium">${data.hotel}</span></div>
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-base mb-3 flex items-center gap-2 text-slate-800">
+                        <i data-lucide="map-pin" class="h-4 w-4 gold"></i> 景點詳解與攝影指南
+                    </h3>
+                    ${highlightsHTML}
+                </div>
+            `;
+            lucide.createIcons();
+            contentContainer.scrollTop = 0;
+        }
+
+        // Initialize
+        lucide.createIcons();
+
+        // Handle details toggle icons (rotate chevron)
+        document.querySelectorAll('details').forEach(detail => {
+            detail.addEventListener('toggle', function() {
+                const icon = this.querySelector('summary i[data-lucide="chevron-down"]');
+                if (icon) {
+                    icon.style.transform = this.open ? 'rotate(180deg)' : '';
+                    icon.style.transition = 'transform 0.2s';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
