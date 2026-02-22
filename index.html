@@ -27,7 +27,10 @@
         .tab-active { border-bottom: 2px solid var(--gold); color: var(--gold); font-weight: 700; }
 
         /* Day nav active */
-        .day-active { background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: white; border-radius: 0.75rem; box-shadow: 0 4px 15px rgba(197,151,58,0.3); }
+        .day-btn { border: 1px solid transparent; transition: all 0.3s ease; }
+        .day-active { background: linear-gradient(135deg, #FFF9F0 0%, #FFFFFF 100%); border: 1px solid #E8C97A; border-radius: 0.75rem; box-shadow: 0 4px 15px rgba(197,151,58,0.15); }
+        .day-active .day-num { color: var(--gold-dark) !important; font-family: 'Noto Serif TC', serif; font-size: 1.1rem; }
+        .day-active .day-desc { color: #4A3525 !important; font-weight: 600; }
 
         /* Card styles */
         .card {
@@ -570,7 +573,7 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div class="bg-rose-50 rounded-lg p-4">
                                     <div class="font-bold text-rose-800 mb-1">🐦 埃及烤鴿（Hamam Mashwi）</div>
-                                    <p>埃及最具代表性的傳統美食，鴿子以香料醃製後慢烤，皮脆肉 প্রচ嫩，搭配埃及烤餅一起吃。行程中將有專排體驗。</p>
+                                    <p>埃及最具代表性的傳統美食，鴿子以香料醃製後慢烤，皮脆肉嫩，搭配埃及烤餅一起吃。行程中將有專排體驗。</p>
                                 </div>
                                 <div class="bg-rose-50 rounded-lg p-4">
                                     <div class="font-bold text-rose-800 mb-1">🌿 努比亞烤魚（Tilapia）</div>
@@ -679,6 +682,12 @@
         }
 
         // ========== Itinerary Data (15 days) ==========
+        const tourDates = {
+            1: '3/26', 2: '3/27', 3: '3/28', 4: '3/29', 5: '3/30',
+            6: '3/31', 7: '4/1', 8: '4/2', 9: '4/3', 10: '4/4',
+            11: '4/5', 12: '4/6', 13: '4/7', 14: '4/8', 15: '4/9'
+        };
+
         const itineraryData = {
             1: {
                 route: "台北 ✈ 杜拜",
@@ -897,15 +906,15 @@
             for (let i = 1; i <= 15; i++) {
                 const dayBtn = document.createElement('button');
                 dayBtn.id = `btn-day-${i}`;
-                dayBtn.className = 'flex-shrink-0 md:w-full text-left px-3 py-2.5 rounded-lg text-xs font-medium transition-all mb-0.5 hover:bg-amber-50 flex flex-col';
+                dayBtn.className = 'day-btn flex-shrink-0 md:w-full text-left px-3 py-2.5 rounded-lg text-xs font-medium transition-all mb-0.5 hover:bg-amber-50 flex flex-col';
                 dayBtn.onclick = () => switchDay(i);
                 let badges = '';
                 if (dustDays.includes(i)) badges += '<span style="font-size:0.6rem;color:#dc2626">🚨粉塵</span>';
                 if (laundryDays.includes(i)) badges += '<span style="font-size:0.6rem;color:#2563eb">👕洗衣</span>';
                 dayBtn.innerHTML = `
-                    <span class="font-bold text-amber-800 day-num">Day ${i}</span>
-                    <span class="text-slate-400 text-xs truncate max-w-[160px]">${dayLabels[i]}</span>
-                    <div class="flex gap-1">${badges}</div>
+                    <span class="day-num font-bold text-amber-800 flex items-baseline gap-1 transition-all">Day ${i} <span class="text-[10px] font-sans font-normal opacity-80">(${tourDates[i]})</span></span>
+                    <span class="day-desc text-slate-400 text-xs truncate max-w-[160px] transition-all">${dayLabels[i]}</span>
+                    <div class="flex gap-1 mt-0.5">${badges}</div>
                 `;
                 navContainer.appendChild(dayBtn);
             }
@@ -917,10 +926,8 @@
                 if (!btn) continue;
                 if (i === day) {
                     btn.classList.add('day-active');
-                    btn.querySelector('.day-num').style.color = 'white';
                 } else {
                     btn.classList.remove('day-active');
-                    btn.querySelector('.day-num').style.color = '';
                 }
             }
             renderDailyContent(day);
@@ -932,6 +939,7 @@
 
         function renderDailyContent(day) {
             const data = itineraryData[day];
+            const dateStr = tourDates[day];
             const contentContainer = document.getElementById('daily-content');
             const dustWarning = [4, 5, 13].includes(day) ? `<div class="dust-warning p-3 mb-4 text-sm"><strong class="text-red-700">🚨 高粉塵警告：</strong><span class="text-red-600">今日為高粉塵風險日，請隨身攜帶人工淚液並全程配戴防風墨鏡。</span></div>` : '';
             const laundryNote = [3, 8, 9, 12].includes(day) ? `<div class="bg-blue-50 border-l-4 border-blue-400 p-3 mb-4 text-sm rounded-r-lg"><strong class="text-blue-700">👕 洗衣提醒：</strong><span class="text-blue-600">今日為建議洗衣日，請善用飯店或郵輪洗衣服務。</span></div>` : '';
@@ -958,7 +966,10 @@
 
             contentContainer.innerHTML = `
                 <div class="max-w-3xl mx-auto pb-10 fade-in">
-                    <h2 class="text-2xl font-bold section-title mb-1">Day ${day}</h2>
+                    <h2 class="text-2xl font-bold section-title mb-1 flex items-end gap-3">
+                        Day ${day} 
+                        <span class="text-lg text-amber-700 font-medium font-sans tracking-wide opacity-90">${dateStr}</span>
+                    </h2>
                     <h3 class="text-lg gold font-semibold mb-4">${data.route}</h3>
                     ${dustWarning}${laundryNote}
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
